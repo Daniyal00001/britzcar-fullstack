@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Available Cars - Britzcar Limited</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+    <div class="nav-left">
+        <img src="images/logo.png" class="logo">
+        <a href="index.html" class="company-name">Britzcar Limited</a>
+    </div>
+<button class="menu-btn">&#9776;</button>
+<div class="menu">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="cars.html">Available Cars</a>
+    <a href="sell-car.html">Sell My Car</a>
+    <a href="feedback.html">Feedback</a>
+    <!-- <a href="admin-login.html">Admin</a> -->
+</div>
+</nav>
+<main class="container">
+    <h2>Available Cars</h2>
+    <p>Discover our collection of verified vehicles</p>
+<div class="filters-panel">
+    <div class="left">
+<input id="q" type="search" placeholder="Search (name/make/model)">
+<input id="maxPrice" type="number" placeholder="Max Price (£)">
+<input id="minYear" type="number" placeholder="Min Year">
+</div>
+<div class="right">
+    <label for="sortCars">Sort:</label>
+<select id="sortCars">
+    <option value="priceHigh">
+        Price: High → Low
+    </option>
+    <option value="priceLow">
+        Price: Low → High
+    </option>
+    <option value="yearNew">
+        Year: New → Old
+    </option>
+    <option value="yearOld">
+        Year: Old → New
+    </option>
+</select>
+</div>
+</div>
+<div class="car-list" id="carList">    
+</div>
+</main>
+<section class="container contact">
+    <div class="info">
+        <h2>Get In Touch</h2>
+        <p>WhatsApp: <a href="https://wa.me/+447960030047" target="_blank">+447960030047</a>
+        </p>
+        <p>
+            Email: <a href="mailto:britcars.urban@gmail.com">britcars.urban@gmail.com</a>
+        </p>
+        <p>
+            Phone: +447960030047
+        </p>
+    </div>
+    <div class="summary">
+        <strong>Find your dream car with Britzcar!</strong>
+        <br>
+        Buy or sell easily.
+    </div>
+</section>
+<a href="https://wa.me/+447960030047" target="_blank" class="whatsapp-btn">
+    <img src="images/whatsapp.png" alt="">
+</a>
+<script src="script.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>
+{window.CarsPage?.init&&window.CarsPage.init();});
+</script>
+</body>
+</html>

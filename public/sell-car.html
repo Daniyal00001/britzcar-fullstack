@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sell My Car - Britzcar Limited</title>
+
+  <!-- your global stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Page-specific layout fixes (scoped) -->
+  <style>
+    /* Container card */
+    .sell-car-section {
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 24px 20px;
+      border-radius: 10px;
+      background: #111;               /* matches your dark theme */
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+    }
+
+    .sell-car-section h2 {
+      margin: 0 0 14px;
+    }
+
+    /* Grid form */
+    .sell-car-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 16px;
+      margin-top: 8px;
+    }
+    @media (max-width: 720px){
+      .sell-car-form { grid-template-columns: 1fr; }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-field label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #fff;
+      outline: none;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .form-field select:focus {
+      border-color: #ff3b3b;
+      box-shadow: 0 0 0 3px rgba(255,59,59,.15);
+    }
+    .form-field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* Full-width items */
+    .col-span-2 { grid-column: 1 / -1; }
+
+    /* Actions */
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .form-actions .btn {
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #ff3b3b;
+      color: #fff;
+      font-weight: 600;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+    .form-actions .btn:hover { transform: translateY(-1px); opacity: .95; }
+
+    /* Submitted items list */
+    .submitted-cars-list {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .submitted-cars-list .item {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 12px;
+      color: #eee;
+    }
+
+    /* Nav spacing fix so content doesn’t stick to the nav */
+    main.container { padding-top: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-left">
+      <img src="images/logo.png" class="logo" alt="Britzcar logo" />
+      <a href="index.html" class="company-name">Britzcar Limited</a>
+    </div>
+    <button class="menu-btn" aria-label="Toggle Menu">&#9776;</button>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="cars.html">Available Cars</a>
+      <a href="sell-car.html" class="active">Sell My Car</a>
+      <a href="feedback.html">Feedback</a>
+      <!-- <a href="admin-login.html">Admin</a> -->
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="container sell-car-section">
+    <h2>Sell My Car</h2>
+    <p class="mb-3" style="opacity:.85">Fill the form below and we’ll review your car details. We’ll reach you on WhatsApp or email.</p>
+
+    <form id="sellForm" class="sell-car-form" novalidate>
+      <div class="form-field">
+        <label for="sellerName">Your Name *</label>
+        <input id="sellerName" name="sellerName" placeholder="e.g., Ali Khan" required />
+      </div>
+
+      <div class="form-field">
+        <label for="contact">Phone / WhatsApp *</label>
+        <input id="contact" name="contact" placeholder="+92 3XX XXXXXXX" required />
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="form-field">
+        <label for="make">Make *</label>
+        <input id="make" name="make" placeholder="e.g., Toyota" required />
+      </div>
+
+      <div class="form-field">
+        <label for="model">Model *</label>
+        <input id="model" name="model" placeholder="e.g., Corolla" required />
+      </div>
+
+      <div class="form-field">
+        <label for="year">Year *</label>
+        <input id="year" name="year" type="number" min="1980" max="2099" step="1" placeholder="e.g., 2018" required />
+      </div>
+
+      <div class="form-field">
+        <label for="mileage">Mileage (km)</label>
+        <input id="mileage" name="mileage" type="number" min="0" step="1" placeholder="e.g., 65000" />
+      </div>
+
+      <div class="form-field">
+        <label for="color">Color</label>
+        <input id="color" name="color" placeholder="e.g., White" />
+      </div>
+
+      <div class="form-field">
+        <label for="expectedPrice">Expected Price (£)</label>
+        <input id="expectedPrice" name="expectedPrice" type="number" min="0" step="1" placeholder="e.g., 4500" />
+      </div>
+
+    <div class="form-field col-12">
+      <label for="images">Car Photos (up to 6)</label>
+      <input id="images" name="images" type="file" accept="image/*" multiple />
+      <small style="opacity:.8">Allowed ~ jpg, png, jpeg — up to 5MB each</small>
+      <div id="preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+    </div>
+
+      <div class="form-field col-span-2">
+        <label for="notes">Additional Notes</label>
+        <textarea id="notes" name="notes" placeholder="Condition, service history, extras, etc."></textarea>
+      </div>
+
+      
+
+      <div class="form-actions">
+        <button type="submit" class="btn">Submit Request</button>
+      </div>
+    </form>
+
+    <div class="submitted-cars-list" id="submittedList" aria-live="polite"></div>
+  </main>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/+447960030047" target="_blank" class="whatsapp-btn" aria-label="Chat on WhatsApp">
+    <img src="images/whatsapp.png" alt="WhatsApp"/>
+  </a>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // keep your existing page init hook
+      if (window.SellPage?.init) window.SellPage.init();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback - Britzcar Limited</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <img src="images/logo.png" class="logo">
+    <a href="index.html" class="company-name">
+      Britzcar Limited</a>
+    </div>
+<button class="menu-btn">&#9776;</button>
+<div class="menu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About Us</a>
+  <a href="cars.html">Available Cars</a>
+  <a href="sell-car.html">Sell My Car</a>
+  <a href="feedback.html">Feedback</a>
+  <!-- <a href="admin-login.html">Admin</a> -->
+</div>
+</nav>
+<main class="container feedback-section">
+  <h2>Feedback</h2>
+<form id="fbForm" class="feedback-form">
+  <input name="name" placeholder="Your Name" required>
+  <input name="email" placeholder="Email">
+  <select name="rating">
+    <option value="5">★★★★★</option>
+    <option value="4">★★★★☆</option>
+    <option value="3">★★★☆☆</option>
+    <option value="2">★★☆☆☆</option>
+    <option value="1">★☆☆☆☆</option>
+  </select>
+  <textarea name="message" placeholder="Your feedback..." required></textarea>
+  <button>Send Feedback</button>
+</form>
+<div class="feedback-list" id="feedbackList"></div>
+</main>
+<a href="https://wa.me/+447960030047" target="_blank" class="whatsapp-btn">
+  <img src="images/whatsapp.png" alt="">
+</a>
+<script src="script.js">
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>
+{window.FeedbackPage?.init&&window.FeedbackPage.init();});
+</script>
+</body>
+</html>

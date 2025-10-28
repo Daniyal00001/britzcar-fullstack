@@ -1,0 +1,305 @@
+/* ====== Dark Theme ====== */
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#000;
+    color:#fff;
+    scroll-behavior:smooth
+}
+.container{
+    max-width:1200px;
+    margin:20px auto;
+    padding:0 16px
+}
+    h2{
+        margin:40px 0 16px
+    }
+
+/* Nav */
+nav
+{background:#111;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    height:80px;
+    position:sticky;
+    top:0;z-index:1000}
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px
+}
+.logo{
+    height:50px
+}
+.company-name{
+    font-size:22px;
+    font-weight:700;
+    color:#fff;
+    text-decoration:none;
+    text-shadow:0 0 8px red
+}
+.menu-btn{
+    font-size:26px;
+    color:#fff;
+    background:none;
+    border:none;
+    cursor:pointer;
+    display:none
+}
+.menu{
+    display:flex;
+    gap:16px
+}
+.menu a{
+    text-decoration:none;
+    color:#fff;
+    font-weight:600;
+    padding:6px 8px;
+    transition:.2s
+}
+.menu a:hover{
+    color:#ff3b3b
+}
+@media(max-width:768px){
+    .menu-btn{display:block}
+    .menu{flex-direction:column;
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        background:#111;
+        text-align:center;
+        max-height:0;
+        overflow:hidden;
+        transition:max-height .3s
+    }
+    .menu.active{
+        max-height:360px
+    }
+}
+
+/* Hero */
+header{
+    position:relative;
+    width:100%;
+    height:320px;
+    overflow:hidden
+}
+.slider-container,#heroSlider,.slide{
+    height:100%
+}
+.slide{
+    display:flex
+}
+.slide img{
+    width:100%;
+    height:100%;
+    object-fit:cover
+}
+
+/* Gallery + Features */
+.welcome-gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+    margin:20px 0
+}
+.welcome-gallery img{
+    width:100%;
+    height:150px;
+    object-fit:cover;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,.5)
+}
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px
+}
+.feature-card{
+    background:#1a1a1a;
+    padding:16px;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,.5)
+}
+.feature-card h3{
+    color:#ff3b3b;
+    margin:0 0 8px
+}
+.feature-card p{
+    color:#ddd;
+    margin:0
+}
+
+/* Filters */
+.filters-panel{
+    background:#111;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:16px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    justify-content:space-between
+}
+.filters-panel input,
+.filters-panel select{
+    padding:8px 10px;
+    border-radius:6px;
+    background:#222;
+    color:#fff;
+    border:1px solid #333;
+    min-width:140px
+}
+
+/* Car cards */
+.car-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:18px
+}
+.car-card{
+    background:#111;
+    border:1px solid #222;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.6);
+    transition:.25s;
+    display:flex;
+    flex-direction:column
+}
+.car-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 20px rgba(0,0,0,.8)
+}
+.car-card .image-container{
+    height:180px
+}
+.car-card .image-container img{
+    width:100%;
+    height:100%;
+    object-fit:cover
+}
+.car-card .info{
+    padding:12px
+}
+.car-card .info h3{
+    margin:0 0 6px;
+    font-size:18px
+}
+.car-card .info p{
+    margin:4px 0;
+    color:#bbb
+}
+.car-card .btn-whatsapp{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#25d366;
+    color:#fff;
+    text-decoration:none;
+    padding:6px 10px;
+    border-radius:6px;
+    margin-top:8px
+}
+.car-card .btn-whatsapp img{
+    width:16px;
+    height:16px;
+    filter:brightness(0) invert(1)
+}
+
+/* Sections */
+.feedback-section,.sell-car-section,.admin-section{
+    background:#111;
+    padding:18px;
+    border-radius:10px;
+    margin:20px 0
+}
+form input,form textarea,form select,form button{
+    width:100%;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #333;
+    background:#222;
+    color:#fff
+}
+form button{
+    background:#ff3b3b;
+    border:none;
+    cursor:pointer
+}
+form button:hover{
+    background:#e63946
+}
+
+/* Details page */
+.hero-img{
+    width:100%;
+    max-height:480px;
+    object-fit:cover;
+    border-radius:10px;
+    margin:12px 0 18px
+}
+.thumbs{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:16px
+}
+.thumbs img{
+    width:90px;
+    height:65px;
+    object-fit:cover;
+    border-radius:6px;
+    border:2px solid transparent;
+    cursor:pointer
+}
+.thumbs img.active{
+    border-color:#ff3b3b
+}
+.specs{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+    background:#111;
+    padding:16px;
+    border-radius:10px
+}
+.description{
+    background:#222;
+    padding:14px;
+    border-radius:10px;
+    margin-top:12px
+}
+.contact{
+    background:#222;
+    padding:16px;
+    border-radius:10px;
+    margin:20px 0;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:12px
+}
+.contact .info h2{
+    color:#ff3b3b
+}
+.whatsapp-btn{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    background:#25d366;
+    border-radius:50%;
+    width:54px;
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.6)
+}
+.whatsapp-btn img{
+    width:28px;
+    height:28px
+}

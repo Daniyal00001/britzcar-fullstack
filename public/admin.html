@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Britzcar</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <img src="images/logo.png" class="logo">
+    <span class="company-name">Admin Panel</span>
+  </div>
+<button onclick="logout()" class="menu-btn" title="Logout">⎋</button>
+<div class="menu">
+  <a href="index.html">View Site</a>
+  <a href="cars.html">Available Cars</a>
+</div>
+</nav>
+<main class="container">
+<section class="admin-section">
+  <h2>Car Management</h2>
+<form id="carForm">
+  <label>Car Name</label>
+  <input id="name" required placeholder="e.g., BMW 3 Series">
+  <label>Price (£)</label>
+  <input id="price" type="number" required>
+  <label>Year</label>
+  <input id="year" type="number" min="1900" max="2099">
+  <label>Mileage (km)</label>
+  <input id="mileage" type="number" min="0">
+  <label>Fuel</label>
+  <select id="fuel">
+    <option>Petrol</option>
+    <option>Diesel</option>
+    <option>Electric</option>
+    <option>Hybrid</option>
+    <option>CNG</option>
+  </select>
+  <label>Transmission</label>
+  <select id="transmission"><option>Automatic</option><option>Manual</option><option>CVT</option></select>
+  <label>Engine</label>
+  <select id="engine">
+    <option>1.0L</option>
+    <option>1.6L</option>
+    <option>2.0L</option>
+    <option>3.0L</option>
+    <option>4.0L</option>
+    <option>5.0L</option>
+  </select>
+  <label>Color</label>
+  <select id="color">
+    <option>Black</option>
+    <option>White</option>
+    <option>Red</option>
+    <option>Silver</option>
+    <option>Blue</option>
+    <option>Grey</option>
+  </select>
+  <label>Previous Owners</label>
+  <input id="owners" type="number" min="0" max="10">
+  <label>Condition (0-10)</label>
+  <input id="condition" type="number" min="0" max="10" step="0.5">
+  <label>Details</label>
+  <textarea id="details" rows="3"></textarea>
+  <label>Image URL</label>
+  <input id="imageUrl" placeholder="https://...">
+
+      <div class="form-field col-12">
+      <label for="images">Car Photos (up to 6)</label>
+      <input id="images" name="images" type="file" accept="image/*" multiple />
+      <small style="opacity:.8">Allowed ~ jpg, png, jpeg — up to 5MB each</small>
+      <div id="preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+    </div>
+
+    
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+    <input type="hidden" id="editId">
+    <button type="submit">Save Car</button>
+    <button type="button" id="resetBtn">Reset</button>
+  </div>
+</form></section>
+<section class="admin-section">
+  <h2>Existing Cars</h2>
+  <div id="carListAdmin"></div>
+</section>
+<section class="admin-section">
+  <h2>Sell-My-Car Submissions</h2>
+  <div id="sellCarSubmissions">    
+  </div>
+</section>
+<section class="admin-section">
+  <h2>Feedback</h2>
+  <div id="feedbackAdmin">
+  </div>
+</section>
+</main>
+<script src="script.js"></script>
+<script>
+ if(!localStorage.getItem('token')) location.href='admin-login.html';
+ function logout(){localStorage.removeItem('token');location.href='admin-login.html';}
+ document.addEventListener('DOMContentLoaded',()=>{window.AdminPage?.init&&window.AdminPage.init();});
+</script></body></html>

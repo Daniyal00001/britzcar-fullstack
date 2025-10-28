@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Britzcar Limited</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Page-scoped responsive styles -->
+  <style>
+    /* wrapper card */
+    .about-wrap{
+      max-width:1100px;
+      margin:24px auto;
+      padding:clamp(16px,3vw,28px);
+      background:#111;
+      border:1px solid #2b2b2b;
+      border-radius:12px;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+      color:#fff;
+    }
+
+    .about-head{
+      margin:0 0 12px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+    }
+    .about-head h2{margin:0;line-height:1.2}
+    .about-intro{opacity:.85;margin:0 0 18px;line-height:1.7}
+
+    /* grid: text + images */
+    .about-grid{
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap:clamp(14px,2.8vw,22px);
+    }
+    /* text block */
+    .about-text p{
+      margin:0 0 12px;
+      color:#e8e8e8;
+      line-height:1.75;
+    }
+    .about-text p:last-child{margin-bottom:0}
+
+    /* image grid auto-fit */
+    .about-images{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap:12px;
+      align-content:start;
+    }
+    .about-images img{
+      width:100%;
+      height:clamp(120px,16vw,160px);
+      object-fit:cover;
+      border-radius:10px;
+      border:1px solid #333;
+      box-shadow:0 6px 16px rgba(0,0,0,.25);
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .about-images img:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 24px rgba(0,0,0,.35);
+    }
+
+    /* section accent */
+    .accent{color:#ff3b3b;font-weight:700}
+
+    /* breakpoints */
+    @media (max-width: 960px){
+      .about-grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px){
+      .about-wrap{ margin:16px 12px; padding:14px; }
+      .about-images{ gap:10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-left">
+      <img src="images/logo.png" class="logo" alt="Britzcar Logo">
+      <a href="index.html" class="company-name">Britzcar Limited</a>
+    </div>
+    <button class="menu-btn" aria-label="Toggle Menu">&#9776;</button>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html" class="active">About Us</a>
+      <a href="cars.html">Available Cars</a>
+      <a href="sell-car.html">Sell My Car</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- About Section -->
+    <section class="about-wrap">
+      <div class="about-head">
+        <h2><span class="accent">About</span> Britzcar</h2>
+      </div>
+      <p class="about-intro">
+        Britzcar is your trusted online platform to buy and sell cars effortlessly. From budget to luxury,
+        we feature verified listings, transparent pricing, and easy WhatsApp communication for a seamless experience.
+      </p>
+
+      <div class="about-grid">
+        <!-- text -->
+        <div class="about-text">
+          <p>Our team ensures every listing is vetted and presented with clear details so you can make informed decisions confidently.</p>
+          <p>We guide you through each step — from reviewing history to finalizing the deal — keeping it simple and stress-free.</p>
+          <p>With Britzcar, you get more than a marketplace: a helpful community, reliable sellers, and a hassle-free way to find your next car fast and safely.</p>
+        </div>
+
+        <!-- images -->
+        <div class="about-images">
+          <img src="images/about1.jpg" alt="Britzcar showroom">
+          <img src="images/about2.jpg" alt="Friendly customer service">
+          <img src="images/about3.jpg" alt="Luxury cars lineup">
+          <img src="images/about4.jpg" alt="Affordable cars selection">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact Section (uses your global contact styles) -->
+  <section class="contact">
+    <div class="info">
+      <h2>Contact Us</h2>
+      <p>WhatsApp: <a href="https://wa.me/+447960030047" target="_blank" style="color:#25d366;text-decoration:none;">+447960030047</a></p>
+      <p>Email: <a href="mailto:britcars.urban@gmail.com" style="color:#ff3b3b;text-decoration:none;">britcars.urban@gmail.com</a></p>
+      <p>Phone: +447960030047</p>
+    </div>
+    <div class="summary">
+      <strong>Find your dream car with Britzcar!</strong><br>
+      Buy or sell easily, connect directly via WhatsApp, and explore a wide range of verified vehicles.
+    </div>
+  </section>
+
+  <!-- (optional) Floating WhatsApp, keep if used across site -->
+  <a href="https://wa.me/+447960030047" target="_blank" class="whatsapp-btn" aria-label="Chat on WhatsApp">
+    <img src="images/whatsapp.png" alt="WhatsApp">
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
