@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sell My Car - Britzcar Limited</title>
-
-  <!-- your global stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Page-specific layout fixes (scoped) -->
   <style>
-    /* Container card */
     .sell-car-section {
       max-width: 980px;
       margin: 32px auto;
       padding: 24px 20px;
       border-radius: 10px;
-      background: #111;               /* matches your dark theme */
+      background: #111;
       box-shadow: 0 6px 18px rgba(0,0,0,.25);
     }
 
@@ -24,7 +20,6 @@
       margin: 0 0 14px;
     }
 
-    /* Grid form */
     .sell-car-form {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -65,10 +60,8 @@
       resize: vertical;
     }
 
-    /* Full-width items */
     .col-span-2 { grid-column: 1 / -1; }
 
-    /* Actions */
     .form-actions {
       grid-column: 1 / -1;
       display: flex;
@@ -87,8 +80,12 @@
       transition: transform .15s ease, opacity .15s ease;
     }
     .form-actions .btn:hover { transform: translateY(-1px); opacity: .95; }
+    .form-actions .btn:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed;
+      transform: none;
+    }
 
-    /* Submitted items list */
     .submitted-cars-list {
       margin-top: 22px;
       display: grid;
@@ -103,13 +100,77 @@
       color: #eee;
     }
 
-    /* Nav spacing fix so content doesn’t stick to the nav */
     main.container { padding-top: 8px; }
+
+    /* Image preview styles */
+    .image-preview-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .preview-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #333;
+    }
+    .preview-item .remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ff3b3b;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .preview-item .remove-btn:hover {
+      background: #cc0000;
+    }
+
+    .upload-info {
+      color: #999;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .loading-overlay.active {
+      display: flex;
+    }
+    .loading-spinner {
+      color: white;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
   <nav>
     <div class="nav-left">
       <img src="images/logo.png" class="logo" alt="Britzcar logo" />
@@ -122,14 +183,12 @@
       <a href="cars.html">Available Cars</a>
       <a href="sell-car.html" class="active">Sell My Car</a>
       <a href="feedback.html">Feedback</a>
-      <!-- <a href="admin-login.html">Admin</a> -->
     </div>
   </nav>
 
-  <!-- Main -->
   <main class="container sell-car-section">
     <h2>Sell My Car</h2>
-    <p class="mb-3" style="opacity:.85">Fill the form below and we’ll review your car details. We’ll reach you on WhatsApp or email.</p>
+    <p class="mb-3" style="opacity:.85">Fill the form below and we'll review your car details. We'll reach you on WhatsApp or email.</p>
 
     <form id="sellForm" class="sell-car-form" novalidate>
       <div class="form-field">
@@ -177,29 +236,30 @@
         <input id="expectedPrice" name="expectedPrice" type="number" min="0" step="1" placeholder="e.g., 4500" />
       </div>
 
-    <div class="form-field col-12">
-      <label for="images">Car Photos (up to 6)</label>
-      <input id="images" name="images" type="file" accept="image/*" multiple />
-      <small style="opacity:.8">Allowed ~ jpg, png, jpeg — up to 5MB each</small>
-      <div id="preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
-    </div>
+      <div class="form-field col-span-2">
+        <label for="images">Car Photos (up to 6 images)</label>
+        <input id="images" name="images" type="file" accept="image/*" multiple />
+        <div class="upload-info">Max 5MB per image • JPG, PNG, JPEG</div>
+        <div id="imagePreview" class="image-preview-container"></div>
+      </div>
 
       <div class="form-field col-span-2">
         <label for="notes">Additional Notes</label>
         <textarea id="notes" name="notes" placeholder="Condition, service history, extras, etc."></textarea>
       </div>
 
-      
-
       <div class="form-actions">
-        <button type="submit" class="btn">Submit Request</button>
+        <button type="submit" class="btn" id="submitBtn">Submit Request</button>
       </div>
     </form>
 
     <div class="submitted-cars-list" id="submittedList" aria-live="polite"></div>
   </main>
 
-  <!-- Floating WhatsApp -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">⏳ Uploading images...</div>
+  </div>
+
   <a href="https://wa.me/+447960030047" target="_blank" class="whatsapp-btn" aria-label="Chat on WhatsApp">
     <img src="images/whatsapp.png" alt="WhatsApp"/>
   </a>
@@ -207,8 +267,152 @@
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // keep your existing page init hook
-      if (window.SellPage?.init) window.SellPage.init();
+      const form = document.getElementById('sellForm');
+      const imageInput = document.getElementById('images');
+      const previewContainer = document.getElementById('imagePreview');
+      const submitBtn = document.getElementById('submitBtn');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const list = document.getElementById('submittedList');
+      let selectedFiles = [];
+
+      // Image preview handler
+      imageInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        
+        // Limit to 6 images
+        if (files.length > 6) {
+          alert('Maximum 6 images allowed');
+          e.target.value = '';
+          return;
+        }
+
+        // Validate file sizes
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const invalidFiles = files.filter(f => f.size > maxSize);
+        if (invalidFiles.length > 0) {
+          alert('Some images are larger than 5MB. Please compress them.');
+          e.target.value = '';
+          return;
+        }
+
+        selectedFiles = files;
+        renderImagePreviews();
+      });
+
+      function renderImagePreviews() {
+        previewContainer.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="Preview ${index + 1}">
+              <button type="button" class="remove-btn" data-index="${index}">×</button>
+            `;
+            previewContainer.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Remove image handler
+      previewContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+          const index = parseInt(e.target.dataset.index);
+          selectedFiles.splice(index, 1);
+          
+          // Update file input
+          const dt = new DataTransfer();
+          selectedFiles.forEach(f => dt.items.add(f));
+          imageInput.files = dt.files;
+          
+          renderImagePreviews();
+        }
+      });
+
+      // Load existing submissions if admin
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetch('/api/sellcars', { headers: { 'Authorization': 'Bearer ' + token } })
+          .then(res => res.json())
+          .then(rows => {
+            list.innerHTML = rows.map(r => `<div class="item">
+              <strong>${r.make} ${r.model}</strong> • ${r.year || '—'}<br>
+              <small>${r.sellerName} • ${r.contact}</small><br>
+              Expected: £${(r.expectedPrice || 0).toLocaleString()} — <em>${r.status}</em>
+            </div>`).join('');
+          })
+          .catch(() => {});
+      }
+
+      // Form submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        submitBtn.disabled = true;
+        loadingOverlay.classList.add('active');
+
+        try {
+          // Step 1: Upload images first
+          let imageUrls = [];
+          if (selectedFiles.length > 0) {
+            const formData = new FormData();
+            selectedFiles.forEach(file => {
+              formData.append('images', file);
+            });
+
+            const uploadRes = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!uploadRes.ok) {
+              throw new Error('Image upload failed');
+            }
+
+            const uploadData = await uploadRes.json();
+            imageUrls = uploadData.filePaths || [];
+          }
+
+          // Step 2: Submit car data with image URLs
+          const data = {
+            sellerName: form.sellerName.value,
+            contact: form.contact.value,
+            email: form.email.value,
+            make: form.make.value,
+            model: form.model.value,
+            year: form.year.value ? parseInt(form.year.value) : null,
+            mileage: form.mileage.value ? parseInt(form.mileage.value) : null,
+            color: form.color.value,
+            expectedPrice: form.expectedPrice.value ? parseInt(form.expectedPrice.value) : null,
+            notes: form.notes.value,
+            images: imageUrls
+          };
+
+          const response = await fetch('/api/sellcars', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          if (response.ok) {
+            form.reset();
+            selectedFiles = [];
+            previewContainer.innerHTML = '';
+            alert('Submitted successfully! We will contact you soon.');
+          } else {
+            const error = await response.json();
+            alert('Error: ' + (error.message || 'Failed to submit'));
+          }
+        } catch (err) {
+          alert('Error: ' + err.message);
+          console.error(err);
+        } finally {
+          submitBtn.disabled = false;
+          loadingOverlay.classList.remove('active');
+        }
+      });
     });
   </script>
 </body>

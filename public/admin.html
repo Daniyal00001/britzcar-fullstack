@@ -1,104 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - Britzcar</title>
-<link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Britzcar</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .image-preview-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .preview-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+    .preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #333;
+    }
+    .preview-item .remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ff3b3b;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .loading-overlay.active {
+      display: flex;
+    }
+    .loading-spinner {
+      color: white;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
 <body>
-<nav>
-  <div class="nav-left">
-    <img src="images/logo.png" class="logo">
-    <span class="company-name">Admin Panel</span>
-  </div>
-<button onclick="logout()" class="menu-btn" title="Logout">⎋</button>
-<div class="menu">
-  <a href="index.html">View Site</a>
-  <a href="cars.html">Available Cars</a>
-</div>
-</nav>
-<main class="container">
-<section class="admin-section">
-  <h2>Car Management</h2>
-<form id="carForm">
-  <label>Car Name</label>
-  <input id="name" required placeholder="e.g., BMW 3 Series">
-  <label>Price (£)</label>
-  <input id="price" type="number" required>
-  <label>Year</label>
-  <input id="year" type="number" min="1900" max="2099">
-  <label>Mileage (km)</label>
-  <input id="mileage" type="number" min="0">
-  <label>Fuel</label>
-  <select id="fuel">
-    <option>Petrol</option>
-    <option>Diesel</option>
-    <option>Electric</option>
-    <option>Hybrid</option>
-    <option>CNG</option>
-  </select>
-  <label>Transmission</label>
-  <select id="transmission"><option>Automatic</option><option>Manual</option><option>CVT</option></select>
-  <label>Engine</label>
-  <select id="engine">
-    <option>1.0L</option>
-    <option>1.6L</option>
-    <option>2.0L</option>
-    <option>3.0L</option>
-    <option>4.0L</option>
-    <option>5.0L</option>
-  </select>
-  <label>Color</label>
-  <select id="color">
-    <option>Black</option>
-    <option>White</option>
-    <option>Red</option>
-    <option>Silver</option>
-    <option>Blue</option>
-    <option>Grey</option>
-  </select>
-  <label>Previous Owners</label>
-  <input id="owners" type="number" min="0" max="10">
-  <label>Condition (0-10)</label>
-  <input id="condition" type="number" min="0" max="10" step="0.5">
-  <label>Details</label>
-  <textarea id="details" rows="3"></textarea>
-  <label>Image URL</label>
-  <input id="imageUrl" placeholder="https://...">
-
-      <div class="form-field col-12">
-      <label for="images">Car Photos (up to 6)</label>
-      <input id="images" name="images" type="file" accept="image/*" multiple />
-      <small style="opacity:.8">Allowed ~ jpg, png, jpeg — up to 5MB each</small>
-      <div id="preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+  <nav>
+    <div class="nav-left">
+      <img src="images/logo.png" class="logo">
+      <span class="company-name">Admin Panel</span>
     </div>
+    <button onclick="logout()" class="menu-btn" title="Logout">⎋</button>
+    <div class="menu">
+      <a href="index.html">View Site</a>
+      <a href="cars.html">Available Cars</a>
+    </div>
+  </nav>
 
+  <main class="container">
+    <section class="admin-section">
+      <h2>Car Management</h2>
+      <form id="carForm">
+        <label>Car Name</label>
+        <input id="name" required placeholder="e.g., BMW 3 Series">
+        
+        <label>Price (£)</label>
+        <input id="price" type="number" required>
+        
+        <label>Year</label>
+        <input id="year" type="number" min="1900" max="2099">
+        
+        <label>Mileage (km)</label>
+        <input id="mileage" type="number" min="0">
+        
+        <label>Fuel</label>
+        <select id="fuel">
+          <option>Petrol</option>
+          <option>Diesel</option>
+          <option>Electric</option>
+          <option>Hybrid</option>
+          <option>CNG</option>
+        </select>
+        
+        <label>Transmission</label>
+        <select id="transmission">
+          <option>Automatic</option>
+          <option>Manual</option>
+          <option>CVT</option>
+        </select>
+        
+        <label>Engine</label>
+        <select id="engine">
+          <option>1.0L</option>
+          <option>1.6L</option>
+          <option>2.0L</option>
+          <option>3.0L</option>
+          <option>4.0L</option>
+          <option>5.0L</option>
+        </select>
+        
+        <label>Color</label>
+        <select id="color">
+          <option>Black</option>
+          <option>White</option>
+          <option>Red</option>
+          <option>Silver</option>
+          <option>Blue</option>
+          <option>Grey</option>
+        </select>
+        
+        <label>Previous Owners</label>
+        <input id="owners" type="number" min="0" max="10">
+        
+        <label>Condition (0-10)</label>
+        <input id="condition" type="number" min="0" max="10" step="0.5">
+        
+        <label>Details</label>
+        <textarea id="details" rows="3"></textarea>
+        
+        <label>Car Photos (up to 6)</label>
+        <input id="images" type="file" accept="image/*" multiple>
+        <small style="opacity:.8; display:block; margin-top:4px;">Max 5MB per image • JPG, PNG, JPEG</small>
+        <div id="imagePreview" class="image-preview-container"></div>
+        
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+          <input type="hidden" id="editId">
+          <button type="submit" id="saveBtn">Save Car</button>
+          <button type="button" id="resetBtn">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="admin-section">
+      <h2>Existing Cars</h2>
+      <div id="carListAdmin"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2>Sell-My-Car Submissions</h2>
+      <div id="sellCarSubmissions"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2>Feedback</h2>
+      <div id="feedbackAdmin"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2>Change Password</h2>
+      <form id="changePasswordForm" style="max-width: 500px;">
+        <label>Current Password</label>
+        <input id="currentPassword" type="password" required placeholder="Enter current password">
+        
+        <label>New Password</label>
+        <input id="newPassword" type="password" required placeholder="Enter new password" minlength="6">
+        
+        <label>Confirm New Password</label>
+        <input id="confirmPassword" type="password" required placeholder="Confirm new password" minlength="6">
+        
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+          <button type="submit" id="changePasswordBtn">Change Password</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">⏳ Uploading images...</div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if(!localStorage.getItem('token')) location.href='admin-login.html';
+    function logout(){localStorage.removeItem('token');location.href='admin-login.html';}
     
-  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
-    <input type="hidden" id="editId">
-    <button type="submit">Save Car</button>
-    <button type="button" id="resetBtn">Reset</button>
-  </div>
-</form></section>
-<section class="admin-section">
-  <h2>Existing Cars</h2>
-  <div id="carListAdmin"></div>
-</section>
-<section class="admin-section">
-  <h2>Sell-My-Car Submissions</h2>
-  <div id="sellCarSubmissions">    
-  </div>
-</section>
-<section class="admin-section">
-  <h2>Feedback</h2>
-  <div id="feedbackAdmin">
-  </div>
-</section>
-</main>
-<script src="script.js"></script>
-<script>
- if(!localStorage.getItem('token')) location.href='admin-login.html';
- function logout(){localStorage.removeItem('token');location.href='admin-login.html';}
- document.addEventListener('DOMContentLoaded',()=>{window.AdminPage?.init&&window.AdminPage.init();});
-</script></body></html>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('carForm');
+      const imageInput = document.getElementById('images');
+      const previewContainer = document.getElementById('imagePreview');
+      const saveBtn = document.getElementById('saveBtn');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const editIdInput = document.getElementById('editId');
+      let selectedFiles = [];
+      let existingImages = [];
+
+      // Image preview handler
+      imageInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        
+        if (files.length > 6) {
+          alert('Maximum 6 images allowed');
+          e.target.value = '';
+          return;
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        const invalidFiles = files.filter(f => f.size > maxSize);
+        if (invalidFiles.length > 0) {
+          alert('Some images are larger than 5MB');
+          e.target.value = '';
+          return;
+        }
+
+        selectedFiles = files;
+        renderImagePreviews();
+      });
+
+      function renderImagePreviews() {
+        previewContainer.innerHTML = '';
+        
+        existingImages.forEach((url, index) => {
+          const div = document.createElement('div');
+          div.className = 'preview-item';
+          div.innerHTML = `
+            <img src="${url}" alt="Existing ${index + 1}">
+            <button type="button" class="remove-btn" data-type="existing" data-index="${index}">×</button>
+          `;
+          previewContainer.appendChild(div);
+        });
+
+        selectedFiles.forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="New ${index + 1}">
+              <button type="button" class="remove-btn" data-type="new" data-index="${index}">×</button>
+            `;
+            previewContainer.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      previewContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) {
+          const type = e.target.dataset.type;
+          const index = parseInt(e.target.dataset.index);
+          
+          if (type === 'existing') {
+            existingImages.splice(index, 1);
+          } else {
+            selectedFiles.splice(index, 1);
+            const dt = new DataTransfer();
+            selectedFiles.forEach(f => dt.items.add(f));
+            imageInput.files = dt.files;
+          }
+          
+          renderImagePreviews();
+        }
+      });
+
+      // Override AdminPage
+      window.AdminPage = {
+        async init() {
+          const listDiv = document.getElementById('carListAdmin');
+          const sellDiv = document.getElementById('sellCarSubmissions');
+          const fbDiv = document.getElementById('feedbackAdmin');
+
+          async function renderCars() {
+            const cars = await api.getCars();
+            listDiv.innerHTML = cars.map(c => `<div class="car-item">
+              <span>${c.name||c.make+' '+c.model} • ${c.year||'—'} • £${(c.price||0).toLocaleString()}</span>
+              <div>
+                <button onclick="AdminPage.editCar('${c._id}')">Edit</button>
+                <button onclick="AdminPage.deleteCar('${c._id}')">Delete</button>
+              </div>
+            </div>`).join('');
+          }
+
+          async function renderSell() {
+            try {
+              const rows = await api.sellList();
+              sellDiv.innerHTML = rows.map(r => `<div class="sell-car-item">
+                <h3>${r.make} ${r.model} • ${r.year||'—'} — <small>${r.status}</small></h3>
+                <p>${r.sellerName} • ${r.contact} • ${r.email||''}</p>
+                <p>Expected: £${(r.expectedPrice||0).toLocaleString()} | Color: ${r.color||'—'}</p>
+                <div class="actions">
+                  <button onclick="AdminPage.approveSell('${r._id}')">Approve → Add to Cars</button>
+                  <button onclick="AdminPage.rejectSell('${r._id}')">Reject</button>
+                  <button onclick="AdminPage.deleteSell('${r._id}')">Delete</button>
+                </div>
+              </div>`).join('');
+            } catch(e) { 
+              sellDiv.innerHTML = '<em>Login to view submissions.</em>'; 
+            }
+          }
+
+          async function renderFeedback() {
+            const rows = await api.feedbackList();
+            fbDiv.innerHTML = rows.map(r => `<div class="car-item">
+              <span><strong>${r.name}</strong> — ${'★'.repeat(r.rating||5)}${'☆'.repeat(5-(r.rating||5))} — ${r.message}</span>
+              <div><button onclick="AdminPage.deleteFeedback('${r._id}')">Delete</button></div>
+            </div>`).join('');
+          }
+
+          // Form submission with image upload
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveBtn.disabled = true;
+            loadingOverlay.classList.add('active');
+
+            try {
+              let newImageUrls = [];
+              if (selectedFiles.length > 0) {
+                const formData = new FormData();
+                selectedFiles.forEach(file => {
+                  formData.append('images', file);
+                });
+
+                const uploadRes = await fetch('/api/upload', {
+                  method: 'POST',
+                  body: formData
+                });
+
+                if (!uploadRes.ok) throw new Error('Image upload failed');
+                const uploadData = await uploadRes.json();
+                newImageUrls = uploadData.filePaths || [];
+              }
+
+              const allImages = [...existingImages, ...newImageUrls];
+
+              const payload = {
+                name: document.getElementById('name').value,
+                price: +document.getElementById('price').value,
+                year: document.getElementById('year').value ? +document.getElementById('year').value : null,
+                mileage: document.getElementById('mileage').value ? +document.getElementById('mileage').value : null,
+                fuel: document.getElementById('fuel').value,
+                transmission: document.getElementById('transmission').value,
+                engine: document.getElementById('engine').value,
+                color: document.getElementById('color').value,
+                owners: document.getElementById('owners').value ? +document.getElementById('owners').value : null,
+                condition: document.getElementById('condition').value ? +document.getElementById('condition').value : null,
+                details: document.getElementById('details').value,
+                images: allImages
+              };
+
+              const id = editIdInput.value;
+              if (id) {
+                await api.updateCar(id, payload);
+              } else {
+                await api.addCar(payload);
+              }
+
+              form.reset();
+              editIdInput.value = '';
+              selectedFiles = [];
+              existingImages = [];
+              previewContainer.innerHTML = '';
+              await renderCars();
+              alert('Saved successfully!');
+            } catch (err) {
+              alert('Error: ' + err.message);
+              console.error(err);
+            } finally {
+              saveBtn.disabled = false;
+              loadingOverlay.classList.remove('active');
+            }
+          });
+
+          document.getElementById('resetBtn').addEventListener('click', () => {
+            form.reset();
+            editIdInput.value = '';
+            selectedFiles = [];
+            existingImages = [];
+            previewContainer.innerHTML = '';
+          });
+
+          // NEW: Change Password Form Handler - ADDED HERE!
+          const changePassForm = document.getElementById('changePasswordForm');
+          if (changePassForm) {
+            changePassForm.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              
+              const currentPassword = document.getElementById('currentPassword').value;
+              const newPassword = document.getElementById('newPassword').value;
+              const confirmPassword = document.getElementById('confirmPassword').value;
+              const submitBtn = document.getElementById('changePasswordBtn');
+              
+              // Client-side validation
+              if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+              }
+              
+              if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return;
+              }
+              
+              if (currentPassword === newPassword) {
+                alert('New password must be different from current password!');
+                return;
+              }
+              
+              submitBtn.disabled = true;
+              const originalText = submitBtn.textContent;
+              submitBtn.textContent = 'Changing...';
+              
+              try {
+                await api.changePassword(currentPassword, newPassword);
+                
+                alert('✓ Password changed successfully! You will be logged out.');
+                
+                changePassForm.reset();
+                
+                setTimeout(() => {
+                  localStorage.removeItem('token');
+                  location.href = 'admin-login.html';
+                }, 1500);
+                
+              } catch (err) {
+                alert('Error: ' + err.message);
+                console.error('Password change error:', err);
+              } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+              }
+            });
+          }
+
+          this.editCar = async (id) => {
+            const c = await api.getCar(id);
+            editIdInput.value = c._id;
+            document.getElementById('name').value = c.name || '';
+            document.getElementById('price').value = c.price || '';
+            document.getElementById('year').value = c.year || '';
+            document.getElementById('mileage').value = c.mileage || '';
+            document.getElementById('fuel').value = c.fuel || 'Petrol';
+            document.getElementById('transmission').value = c.transmission || 'Automatic';
+            document.getElementById('engine').value = c.engine || '1.6L';
+            document.getElementById('color').value = c.color || 'Black';
+            document.getElementById('owners').value = c.owners || '';
+            document.getElementById('condition').value = c.condition || '';
+            document.getElementById('details').value = c.details || '';
+            
+            existingImages = c.images || [];
+            selectedFiles = [];
+            renderImagePreviews();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          };
+
+          this.deleteCar = async (id) => {
+            if (confirm('Delete this car?')) {
+              await api.deleteCar(id);
+              await renderCars();
+            }
+          };
+
+          this.approveSell = async (id) => {
+            const upd = await api.sellUpdate(id, { status: 'approved' });
+            await api.addCar({
+              name: (upd.make||'')+' '+(upd.model||''),
+              make: upd.make,
+              model: upd.model,
+              year: upd.year,
+              mileage: upd.mileage,
+              color: upd.color,
+              price: upd.expectedPrice || 0,
+              fuel: 'Petrol',
+              transmission: 'Manual',
+              engine: '1.6L',
+              details: upd.notes || '',
+              images: upd.images || ['images/car-placeholder.jpg']
+            });
+            await renderSell();
+            await renderCars();
+            alert('Approved & added to cars.');
+          };
+
+          this.rejectSell = async (id) => {
+            await api.sellUpdate(id, { status: 'rejected' });
+            await renderSell();
+          };
+
+          this.deleteSell = async (id) => {
+            if (confirm('Delete this submission?')) {
+              await api.sellDelete(id);
+              await renderSell();
+            }
+          };
+
+          this.deleteFeedback = async (id) => {
+            if (confirm('Delete this feedback?')) {
+              await api.feedbackDelete(id);
+              await renderFeedback();
+            }
+          };
+
+          await renderCars();
+          await renderSell();
+          await renderFeedback();
+        }
+      };
+
+      window.AdminPage.init();
+    });
+  </script>
+</body>
+</html>

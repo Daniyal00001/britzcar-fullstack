@@ -21,21 +21,54 @@ const api = {
   feedbackCreate: async (row)=> (await fetch(`${API_BASE}/api/feedback`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(row)})).json(),
   feedbackDelete: async (id)=> (await fetch(`${API_BASE}/api/feedback/${id}`, {method:'DELETE', headers:authHeaders()})).json(),
   login: async (email,password)=> (await fetch(`${API_BASE}/api/auth/login`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password})})).json(),
+  
+  // NEW: Change password API call
+  changePassword: async (currentPassword, newPassword) => {
+    const res = await fetch(`${API_BASE}/api/auth/change-password`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Password change failed');
+    return data;
+  }
 };
 
 function renderCarCard(c){
   const name = c.name || `${c.make||''} ${c.model||''}`.trim();
-  const img = (c.images && c.images[0]) || 'images/car-placeholder.jpg';
+  
+  // Handle images - check if uploaded images exist, otherwise use placeholder
+  let img = 'images/car-placeholder.jpg';
+  if (c.images && c.images.length > 0) {
+    // If image starts with /uploads, it's from server
+    // If it's a full URL, use as is
+    // Otherwise assume it's in images folder
+    const firstImage = c.images[0];
+    if (firstImage.startsWith('/uploads/')) {
+      img = firstImage; // Server uploaded image
+    } else if (firstImage.startsWith('http')) {
+      img = firstImage; // Full URL
+    } else {
+      img = firstImage; // Relative path
+    }
+  }
+  
   const msg = `Hi, I am interested in ${name}${c.year?` (${c.year})`:''} listed on Britzcar.`;
   const wa = `https://wa.me/${WA_NUMBER.replace(/\s+/g,'')}/?text=${encodeURIComponent(msg)}`;
+  
   return `
     <div class="car-card" data-id="${c._id}">
-      <div class="image-container" onclick="goDetails('${c._id}')"><img src="${img}" alt="${name}"></div>
+      <div class="image-container" onclick="goDetails('${c._id}')">
+        <img src="${img}" alt="${name}" onerror="this.src='images/car-placeholder.jpg'">
+      </div>
       <div class="info">
         <h3>${name}</h3>
         <p>${[c.make,c.model].filter(Boolean).join(' ')}${c.year?` • ${c.year}`:''}</p>
         <p><strong>${moneyGBP(c.price)}</strong>${c.mileage?` • ${num(c.mileage).toLocaleString()} km`:''}</p>
-        <a href="${wa}" target="_blank" class="btn-whatsapp"><img src="images/whatsapp.png" alt=""> Chat on WhatsApp</a>
+        <a href="${wa}" target="_blank" class="btn-whatsapp">
+          <img src="images/whatsapp.png" alt=""> Chat on WhatsApp
+        </a>
       </div>
     </div>`;
 }
@@ -73,22 +106,50 @@ window.DetailsPage = {
     const id = localStorage.getItem('selectedCarId');
     if(!id) return;
     const car = await api.getCar(id);
-    const imgs = (car.images && car.images.length) ? car.images : ['images/car-placeholder.jpg'];
-    const hero = document.getElementById('heroImg'); if (hero) hero.src = imgs[0];
+    
+    // Handle images
+    let imgs = ['images/car-placeholder.jpg'];
+    if (car.images && car.images.length > 0) {
+      imgs = car.images.map(img => {
+        if (img.startsWith('/uploads/')) return img;
+        if (img.startsWith('http')) return img;
+        return img;
+      });
+    }
+    
+    const hero = document.getElementById('heroImg'); 
+    if (hero) hero.src = imgs[0];
+    
     const thumbs = document.getElementById('thumbs');
     if (thumbs){
-      thumbs.innerHTML = imgs.map((src,i)=> `<img src="${src}" class="${i===0?'active':''}" onclick="(function(){document.getElementById('heroImg').src='${src}'; Array.from(document.querySelectorAll('#thumbs img')).forEach(n=>n.classList.remove('active')); this.classList.add('active');}).call(this)">`).join('');
+      thumbs.innerHTML = imgs.map((src,i)=> `
+        <img src="${src}" 
+             class="${i===0?'active':''}" 
+             onerror="this.src='images/car-placeholder.jpg'"
+             onclick="(function(){
+               document.getElementById('heroImg').src='${src}'; 
+               Array.from(document.querySelectorAll('#thumbs img')).forEach(n=>n.classList.remove('active')); 
+               this.classList.add('active');
+             }).call(this)">
+      `).join('');
     }
+    
     document.getElementById('carTitle').textContent = car.name || `${car.make||''} ${car.model||''}`.trim();
     document.getElementById('titleText').textContent = car.name || `${car.make||''} ${car.model||''}`.trim();
     document.getElementById('priceText').textContent = moneyGBP(car.price);
     document.getElementById('specs').innerHTML = [
-      ['Make', car.make], ['Model', car.model], ['Year', car.year],
+      ['Make', car.make], 
+      ['Model', car.model], 
+      ['Year', car.year],
       ['Mileage', car.mileage? `${num(car.mileage).toLocaleString()} km`:'—'],
-      ['Fuel', car.fuel||'—'], ['Transmission', car.transmission||'—'],
-      ['Engine', car.engine||'—'], ['Color', car.color||'—'],
+      ['Fuel', car.fuel||'—'], 
+      ['Transmission', car.transmission||'—'],
+      ['Engine', car.engine||'—'], 
+      ['Color', car.color||'—'],
     ].map(([k,v])=> `<div><strong>${k}</strong><div>${v||'—'}</div></div>`).join('');
+    
     document.getElementById('description').textContent = car.details || 'No description provided.';
+    
     const msg = `Hi, I am interested in ${car.name||car.model||'a car'}${car.year?` (${car.year})`:''} listed on Britzcar.`;
     document.getElementById('detailsWA').href = `https://wa.me/${WA_NUMBER.replace(/\s+/g,'')}/?text=${encodeURIComponent(msg)}`;
   }
@@ -207,6 +268,62 @@ window.AdminPage = {
       e.target.reset(); document.getElementById('editId').value=''; await renderCars(); alert('Saved.');
     });
     document.getElementById('resetBtn').addEventListener('click', ()=> { document.getElementById('carForm').reset(); document.getElementById('editId').value=''; });
+
+    // NEW: Change Password Form Handler
+    const changePassForm = document.getElementById('changePasswordForm');
+    if (changePassForm) {
+      changePassForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const submitBtn = document.getElementById('changePasswordBtn');
+        
+        // Client-side validation
+        if (newPassword !== confirmPassword) {
+          alert('New passwords do not match!');
+          return;
+        }
+        
+        if (newPassword.length < 6) {
+          alert('Password must be at least 6 characters long!');
+          return;
+        }
+        
+        if (currentPassword === newPassword) {
+          alert('New password must be different from current password!');
+          return;
+        }
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Changing...';
+        
+        try {
+          await api.changePassword(currentPassword, newPassword);
+          
+          alert('✓ Password changed successfully! You will be logged out.');
+          
+          // Clear form
+          changePassForm.reset();
+          
+          // Log out user and redirect to login
+          setTimeout(() => {
+            localStorage.removeItem('token');
+            location.href = 'admin-login.html';
+          }, 1500);
+          
+        } catch (err) {
+          alert('Error: ' + err.message);
+          console.error('Password change error:', err);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+    }
 
     this.editCar = async (id)=>{
       const c = await api.getCar(id);
